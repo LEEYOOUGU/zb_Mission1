@@ -4,6 +4,8 @@ import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.net.HttpURLConnection;
 import common.APIParam;
@@ -56,7 +58,7 @@ public class PubwifiService {
         conn.disconnect();
         return total_Count;
     }
-    public void insertData(){
+    public void insertData() throws SQLException{
         try {
             int total = getCount();
             BufferedReader rd;
@@ -94,6 +96,7 @@ public class PubwifiService {
                 JSONArray  array = (JSONArray) data.get("row");
 
                 JSONObject temp;
+                List<Pubwifi> pubwifis = new ArrayList<>();
                 for(int j = 0; j<array.size();j++){
                     Pubwifi pubwifi = new Pubwifi();
                     temp = (JSONObject) array.get(j);
@@ -114,9 +117,10 @@ public class PubwifiService {
                     pubwifi.setLNT(String.valueOf(temp.get("LNT")));
                     pubwifi.setWORK_DTTM(String.valueOf(temp.get("WORK_DTTM")));
                     
-                    Pubwifidao pubdao = new Pubwifidao();
-                    pubdao.insert(pubwifi);
+                    pubwifis.add(pubwifi);
                 }
+                Pubwifidao pubdao = new Pubwifidao();
+                pubdao.insert(pubwifis);
                 rd.close();
                 conn.disconnect();
                 idx += 1000;

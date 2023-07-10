@@ -6,7 +6,7 @@ import service.Pubwifi;
 
 
 public class Pubwifidao {
-    public void insert(Pubwifi pubwifi){
+    public void insert(List<Pubwifi> pubwifis) throws SQLException{
         String url = "jdbc:mariadb://localhost/Mission1";
         String dbUserId = "testuser1";
         String dbPassword = "zerobase";
@@ -20,39 +20,45 @@ public class Pubwifidao {
         PreparedStatement preparedStatement = null;
 
         try {
+            
             conn = DriverManager.getConnection(url,dbUserId,dbPassword);
+            conn.setAutoCommit(false);
             
             String sql = "INSERT INTO PUB_WIFI VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            int batchSize = 1000;
+            int count = 0;
             preparedStatement = conn.prepareStatement(sql);
-
-            preparedStatement.setString(1, pubwifi.getMGR_NO());
-            preparedStatement.setString(2, pubwifi.getWRDOFC());
-            preparedStatement.setString(3, pubwifi.getMAIN_NM());
-            preparedStatement.setString(4, pubwifi.getADDR1());
-            preparedStatement.setString(5, pubwifi.getADDR2());
-            preparedStatement.setString(6, pubwifi.getINSTL_FL());
-            preparedStatement.setString(7, pubwifi.getINSTL_TY());
-            preparedStatement.setString(8, pubwifi.getINSTL_MBY());
-            preparedStatement.setString(9, pubwifi.getSVC_SE());
-            preparedStatement.setString(10, pubwifi.getCMCWR());
-            preparedStatement.setString(11, pubwifi.getCNSTC_Y());
-            preparedStatement.setString(12, pubwifi.getINOUT_DOOR());
-            preparedStatement.setString(13, pubwifi.getREMARS3());
-            preparedStatement.setString(14, pubwifi.getLAT());
-            preparedStatement.setString(15, pubwifi.getLNT());
-            preparedStatement.setString(16, pubwifi.getWORK_DTTM());
-
-            int affected = preparedStatement.executeUpdate();
-            if(affected >0){
-                System.out.println("성공");
-
+            for(Pubwifi pubwifi: pubwifis){
+                preparedStatement.setString(1, pubwifi.getMGR_NO());
+                preparedStatement.setString(2, pubwifi.getWRDOFC());
+                preparedStatement.setString(3, pubwifi.getMAIN_NM());
+                preparedStatement.setString(4, pubwifi.getADDR1());
+                preparedStatement.setString(5, pubwifi.getADDR2());
+                preparedStatement.setString(6, pubwifi.getINSTL_FL());
+                preparedStatement.setString(7, pubwifi.getINSTL_TY());
+                preparedStatement.setString(8, pubwifi.getINSTL_MBY());
+                preparedStatement.setString(9, pubwifi.getSVC_SE());
+                preparedStatement.setString(10, pubwifi.getCMCWR());
+                preparedStatement.setString(11, pubwifi.getCNSTC_Y());
+                preparedStatement.setString(12, pubwifi.getINOUT_DOOR());
+                preparedStatement.setString(13, pubwifi.getREMARS3());
+                preparedStatement.setString(14, pubwifi.getLAT());
+                preparedStatement.setString(15, pubwifi.getLNT());
+                preparedStatement.setString(16, pubwifi.getWORK_DTTM());
+                preparedStatement.addBatch();
+                if(++count % batchSize == 0){
+                    preparedStatement.executeBatch();
+                    conn.commit();
+                }
             }
-            else{
-                System.out.println("실패");
+            if(count % batchSize == 0){
+                    preparedStatement.executeBatch();
+                    conn.commit();
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
+            conn.rollback();
         }finally{
             try {
                 if(preparedStatement!= null && !preparedStatement.isClosed()){
@@ -70,6 +76,8 @@ public class Pubwifidao {
             }
         }
     }
+
+
     public List<Pubwifi> selectList(String LAT, String LNT){
         List<Pubwifi> wifiList = new ArrayList<>();
         String url = "jdbc:mariadb://localhost/Mission1";
