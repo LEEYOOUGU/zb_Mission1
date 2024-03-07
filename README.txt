@@ -6,4 +6,3 @@ Mission1은 Maven project로 작성하였습니다
 
 
 ERD 파일 및 이미지는 ERD디렉토리에 저장해두었습니다
-구현 영상은 VIDEO 디렉토리에 저장해 두었습니다 

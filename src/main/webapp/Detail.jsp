@@ -13,6 +13,7 @@
 	<meta charset="UTF-8">
 	<title>와이파이 정보 구하기</title>
 	<style>
+
 		#HeaderMenu>ul{
   			display:flex;
   			flex-flow: row nowrap;
@@ -29,6 +30,23 @@
   			float: right;
 			padding: 2px;
   			display: block;
+		}
+		#BookmarkMenu>ul{
+			display:flex;
+			flex-flow: row nowrap;
+			padding: 30px;
+
+		}
+		#BookmarkMenu>ul,li{
+			margin: 0;
+			padding: 0px;
+			list-style: none;
+		}
+		#BookmarkMenu>ul>li::after{
+
+			float: right;
+			padding: 2px;
+			display: block;
 		}
 		#WiFiTable{
 			width: 100%;
@@ -61,6 +79,10 @@
 		.wifi-value:hover {
   			background-color: #808080;
 		}
+		select {
+			margin-bottom: 2px;
+			margin-top: 2px;
+		}
 	</style>
 	<script>
 		
@@ -75,6 +97,20 @@
 			<li><a href="Hist.jsp" class="">위치 히스토리 목록</a></li>
 			<li><a href="LoadWifi.jsp" class="">Open API 와이파이 정보 가져오기</a></li>
 	    </ul>
+	</div>
+	<div id = "BookmarkMenu">
+		<ul>
+			<li>
+				<form action="#">
+						<select name="languages" id="lang">
+						<option value="javascript">JavaScript</option>
+						<option value="php">PHP</option>
+						<option value="java">Java</option>
+						</select>
+				</form>
+			</li>
+			<li><button type = "button" onclick="getLocation()">북마크 추가하기</button></li>
+		</ul>
 	</div>
 	<% 
     	String mgrno = request.getParameter("mgrNo");
