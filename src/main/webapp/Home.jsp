@@ -114,7 +114,7 @@
 			<li><a href="Hist.jsp" class="">위치 히스토리 목록</a></li>
 			<li><a href="LoadWifi.jsp" class="">Open API 와이파이 정보 가져오기</a></li>
 			<li><a href="BookmarkList.jsp" class="">북마크 보기</a></li>
-			<li><a href="BookmarkUpdate.jsp" class="">북마크 그룹 관리</a></li>
+			<li><a href="BookmarkManage.jsp" class="">북마크 그룹 관리</a></li>
 	    </ul>
 	</div>
 	<div id = "InputMenu">

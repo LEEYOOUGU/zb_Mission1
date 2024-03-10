@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>북마크 삭제</title>
+    <title>북마크 그룹 수정</title>
     <style>
         #HeaderMenu>ul{
             display:flex;
@@ -29,23 +29,23 @@
             padding: 2px;
             display: block;
         }
-        #BookmarkUpdateTable{
+        #BookmarkInsertTable{
             width: 100%;
             table-layout: fixed;
         }
-        #BookmarkUpdateTable > tbody>tr>th{
+        #BookmarkInsertTable > tbody>tr>th{
             width: 15%;
             background-color: #04AA6D;
             color: white;
         }
-        #BookmarkUpdateTable > tbody>tr{
+        #BookmarkInsertTable > tbody>tr{
             display: table-row;
         }
-        #BookmarkUpdateTable tbody tr:nth-child(odd) td {
+        #BookmarkInsertTable tbody tr:nth-child(odd) td {
             background-color: #f2f2f2;
 
         }
-        .BookmarkUpdate_value {
+        .BookmarkInsert_value {
             width: 85%;
             border: 1px solid #ddd;
             padding: 3px;
@@ -66,31 +66,31 @@
 
     </style>
     <script>
-        function DeleteBookMark(){
-            var params = new URLSearchParams(window.location.search);
-            var ID = params.get("ID");
-            var fromManage = params.get("fromManage");
-            var isDelete = true
-            var url = (fromManage == "true") ? "http://localhost:8080/BookmarkManage.jsp" : "http://localhost:8080/BookmarkList.jsp"
-            params = new URLSearchParams();
-            params.append("ID", ID);
-            params.append("isDelete",isDelete);
-            url += "?" + params.toString();
-            alert("성공");
-            window.location.href = url;
-        }
-        function ReturnBookmark(){
-            var params = new URLSearchParams(window.location.search);
-            var fromManage = params.get("fromManage");
-            params = new URLSearchParams();
-            var url = (fromManage == "true") ? "http://localhost:8080/BookmarkManage.jsp" : "http://localhost:8080/BookmarkList.jsp"
-            window.location.href = url;
+        function updateBookMark(){
+
+            var url = "http://localhost:8080/BookmarkManage.jsp";
+            var params = new URLSearchParams();
+            var bookmarkName =  document.getElementById("bookmarkName").value;
+            var bookmarkOrder =  document.getElementById("bookmarkOrder").value;
+            var isInsert = true;
+            if(bookmarkName != "" && bookmarkOrder != ""){
+                params.append("bookmarkName", bookmarkName);
+                params.append("bookmarkOrder", bookmarkOrder);
+                params.append("isInsert",isInsert);
+                url += "?" + params.toString();
+                alert("성공");
+                window.location.href = url;
+            }
+            else{
+                alert("다시 입력해주세요");
+            }
+
         }
     </script>
 </head>
 <body>
 
-<h1> 북마크 삭제 </h1>
+<h1> 북마크 그룹 추가 </h1>
 <div id = "HeaderMenu">
     <ul>
         <li><a href="Home.jsp" class="">홈</a></li>
@@ -100,22 +100,17 @@
         <li><a href="BookmarkManage.jsp" class="">북마크 그룹 관리</a></li>
     </ul>
 </div>
-<span><br>북마크를 삭제하시겠습니까?</span>
-<table id = "BookmarkUpdateTable">
+<table id = "BookmarkInsertTable">
     <tbody>
     <tr>
         <th>북마크이름</th>
-        <td><%= request.getParameter("bookMarkName") %></td>
+        <td class="BookmarkInsert_value"><input type ="text" placeholder="" id = "bookmarkName"></td>
     </tr>
     <tr>
-        <th>와이파이명</th>
-        <td><%= request.getParameter("wifiname") != null ? request.getParameter("wifiname") : "" %></td>
+        <th>순서</th>
+        <td class="BookmarkInsert_value"><input type ="text" placeholder="" id="bookmarkOrder" ></td>
     </tr>
-    <tr>
-        <th>등록일자</th>
-        <td><%= request.getParameter("register") %></td>
-    </tr>
-    <td class="lastTd" colspan="2"><span style="cursor: pointer; color: blue; text-decoration: underline;" onclick="ReturnBookmark()">돌아가기</span> | <button type = "button" onclick="DeleteBookMark()">삭제</button></td>
+    <td class="lastTd" colspan="2"><button type = "button" onclick="updateBookMark()">추가</button></td>
     </tbody>
 </table>
 </body>

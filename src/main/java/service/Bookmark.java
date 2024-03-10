@@ -12,6 +12,8 @@ public class Bookmark {
         return MAIN_NM;
     }
 
+
+
     public void setMAIN_NM(String MAIN_NM) {
         this.MAIN_NM = MAIN_NM;
     }

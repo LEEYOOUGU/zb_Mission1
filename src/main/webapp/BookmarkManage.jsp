@@ -9,7 +9,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>북마크 목록</title>
+    <title>북마크 </title>
     <style>
         #HeaderMenu>ul{
             display:flex;
@@ -28,23 +28,23 @@
             padding: 2px;
             display: block;
         }
-        #BookmarkTable{
+        #BookmarkManageTable{
             width: 100%;
 
         }
-        #BookmarkTabelHead > th{
+        #BookmarkManageTableHead > th{
             border: 1px solid #ddd;
             padding: 8px;
         }
-        #BookmarkTableHead > tr{
+        #BookmarkManageTableHead > tr{
             background-color: #04AA6D;
             color: white;
 
         }
-        #BookmarkTableBody > tr:nth-child(odd){background-color: #f2f2f2;}
-        #BookmarkTableBody > tr:hover {background-color: #808080;}
-        #BookmarkTableBody > tr:nth-child(odd):hover{background-color: #808080;}
-        #BookmarkTableBody > td{
+        #BookmarkManageTableBody > tr:nth-child(odd){background-color: #f2f2f2;}
+        #BookmarkManageTableBody > tr:hover {background-color: #808080;}
+        #BookmarkManageTableBody > tr:nth-child(odd):hover{background-color: #808080;}
+        #BookmarkManageTableBody > td{
             border: 1px solid #ddd;
             padding: 8px;
         }
@@ -55,8 +55,8 @@
 </head>
 <body>
 
-<h1> 북마크 목록 </h1>
-<div id = "HeaderMenu">
+<h1> 북마크 그룹 </h1>
+<div id ="HeaderMenu">
     <ul>
         <li><a href="Home.jsp" class="">홈</a></li>
         <li><a href="Hist.jsp" class="">위치 히스토리 목록</a></li>
@@ -65,51 +65,63 @@
         <li><a href="BookmarkManage.jsp" class="">북마크 그룹 관리</a></li>
     </ul>
 </div>
-
-
-<table id = "BookmarkTable">
-    <thead id="BookmarkTableHead">
+<table id = "BookmarkManageTable">
+    <thead id="BookmarkManageTableHead">
     <tr>
         <th>ID</th>
         <th>북마크 이름</th>
-        <th>와이파이명</th>
+        <th>순서</th>
         <th>등록일자</th>
+        <th>수정일자</th>
         <th>비고</th>
     </tr>
     </thead>
-    <tbody id="BookmarkTableBody">
+    <button type = "button" onclick="window.location.href='http://localhost:8080/BookmarkInsert.jsp'">
+        북마크 그룹 이름 추가
+    </button>
+    <tbody id="BookmarkManageTableBody">
     <%
-
         String ID = request.getParameter("ID");
-        String MGR_NO = request.getParameter("MGR_NO");
+
+        String bookmarkName = request.getParameter("bookmarkName");
+        String bookmarkOrder = request.getParameter("bookmarkOrder");
+
+
+        String isUpdateString = request.getParameter("isUpdate");
+        boolean isUpdate = Boolean.parseBoolean(isUpdateString);
+
+        String isInsertString = request.getParameter("isInsert");
+        boolean isInsert = Boolean.parseBoolean(isInsertString);
 
         String isDeleteString = request.getParameter("isDelete");
         boolean isDelete = Boolean.parseBoolean(isDeleteString);
 
-        String isMGR_ADDString = request.getParameter("isMGR_ADD");
-        boolean isMGR_ADD = Boolean.parseBoolean(isMGR_ADDString);
-
         BookmarkService bookmarkService = new BookmarkService();
+
+        if(ID != null && bookmarkName != null && bookmarkOrder != null && isUpdate){
+            bookmarkService.updatetBookmark(ID, bookmarkName,bookmarkOrder);
+        }
+
+        if(bookmarkName != null && bookmarkOrder != null && isInsert){
+            bookmarkService.insertBookmark(bookmarkName,bookmarkOrder);
+        }
+
         if(ID != null && isDelete){
             bookmarkService.deleteBookmark(ID);
         }
-        if(ID != null && MGR_NO != null && isMGR_ADD){
-            bookmarkService.addBookmarkMGR_NO(ID, MGR_NO);
-        }
-
 
         List<Bookmark> bookmarkList = bookmarkService.selectBookmark();
-
-
         for(Bookmark bookmark: bookmarkList){
     %>
     <tr>
         <td><%= bookmark.getID()%></td>
         <td><%= bookmark.getBookMarkName()%></td>
-        <td><a href="Detail.jsp?mgrNo=<%=bookmark.getMGR_NO()%>&dist=0"><%= (bookmark.getMAIN_NM() != null) ? bookmark.getMAIN_NM(): "" %></a></td>
+        <td><%= bookmark.getBookMarkOrder()%></td>
         <td><%= bookmark.getRegisterDate()%></td>
+        <td><%= (bookmark.getUpdateDate() != null) ? bookmark.getUpdateDate() : "" %></td>
         <td>
-            <a href="BookmarkDelete.jsp?ID=<%= bookmark.getID() %>&bookMarkName=<%= bookmark.getBookMarkName() %><% if (bookmark.getMAIN_NM() != null) { %>&wifiname=<%= bookmark.getMAIN_NM() %><% } %>&register=<%= bookmark.getRegisterDate() %>&fromList=true">삭제</a>
+            <a href="BookmarkUpdate.jsp?ID=<%=bookmark.getID()%>">수정</a>
+            <a href="BookmarkDelete.jsp?ID=<%= bookmark.getID() %>&bookMarkName=<%= bookmark.getBookMarkName() %><% if (bookmark.getMAIN_NM() != null) { %>&wifiname=<%= bookmark.getMAIN_NM() %><% } %>&register=<%= bookmark.getRegisterDate() %>&fromManage=true">삭제</a>
         </td>
     </tr>
     <%
